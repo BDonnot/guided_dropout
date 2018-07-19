@@ -290,7 +290,7 @@ class SpecificGDOEncoding(SpecificGDCEncoding):
         :param reload: do you want to reload (T) or build (F) the mask
         :param keep_prob: the keeping probability for regular dropout (applied only in the units not "guided dropout'ed")
         """
-
+        # this is simply used for saving at the moment : 
         SpecificGDCEncoding.__init__(self, sizeinputonehot=sizeinputonehot, nrow=1,
                                      ncol=sizeout, name=name,
                                      path=path, reload=reload, nbconnections=nbconnections,
@@ -331,10 +331,6 @@ class SpecificGDOEncoding(SpecificGDCEncoding):
         """
         res = tf.matmul(x, self.mat, name="building_mask")
         self.mask = res
-        # pdb.set_trace()
-        # res = tf.concat((self.my_one, res), axis=1)
-        # return res
-
 
 if __name__ == "__main__":
     try:
@@ -351,7 +347,7 @@ if __name__ == "__main__":
     # architecture of the neural networks
     use_sigmoid = True  # use sigmoid as non linearity in the network
     nbUnit = 20
-    guided_dropout_encoding = True  # use the guided dropout
+    guided_dropout_encoding = False  # use the guided dropout
 
 
     # load some test data
@@ -374,7 +370,8 @@ if __name__ == "__main__":
                                S_0_origin=[0, 0],  # The origin of source domain with label = 0
                                nb_unit_per_dim=1)
 
-    inputSize_real = x_I.shape[-1]
+    inputSize = x_I.shape[-1]
+    inputSize_real = inputSize
     output_size = S_I.shape[-1]
     sizeinputonehot = tau_I.shape[-1]
 
@@ -405,7 +402,7 @@ if __name__ == "__main__":
                                 )
 
     ## place holders for data
-    phInput = tf.placeholder("float32", shape=[None, inputSize_real])  # x in the paper
+    phInput = tf.placeholder("float32", shape=[None, inputSize])  # x in the paper
     phOutput = tf.placeholder("float32", shape=[None, output_size])  # y_hat in the paper
     phGD = tf.placeholder("float32", shape=[None, sizeinputonehot])  # tau in the paper
 
@@ -419,7 +416,7 @@ if __name__ == "__main__":
         data_input = tf.concat((phInput, phGD), axis=1)
 
     # computation graph
-    h_0 = activation(tf.matmul(phInput, w_input))
+    h_0 = activation(tf.matmul(data_input, w_input))
     h_1 = tf.matmul(h_0, w_gd)
 
     if guided_dropout_encoding:
