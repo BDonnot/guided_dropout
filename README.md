@@ -10,8 +10,52 @@ It shows interesting properties: when trained on single line disconnection, it i
 
 We believe it has a wider range of applications.
 
-## Code
-It requires tensorflow, and python3.
+Let's imagine you have a problem with two kinds of variable:
+- x : continuous variables (in the papers it was the  productions and loads of the power grid)
+- `$\tau$` : a vector of {0,1} (not necessarily one hot), in these paper it was which line was connected (`$\tau[i]=0$` -> line i is connected)
+- y : continous variables (in the papers it was the flows on each power line of the grid)
+
+Suppose you have a function S, that given `$x$` and $\tau$ is able to compute `$y$`: `$y = S(x;\tau)$`.
+
+In that case, you can apply guided dropout in a neural network to predict `$\hat{y}$` from `$x$` and `$\tau$`.
+
+This package, as well as the readme is still in development.
+
+## Requirements and installation
+It requires python3, tensorflow and numpy.
+
+To install it, clone this repository, cd in the proper repository then:
+```python
+pip install .
+```
+
+## Code example
+Let's say you want to apply guided dropout on the hidden layer h, masking some of its neuron depending on the condition of the tensor tau.
+
+Here what you have to add in the definition of your tensflow graph
+```python
+# create the operator for the guided dropout, we suppose that tau has a size of "sizeinputonehot"
+# and h has a dimension of "latentdim"
+gd_op = SpecificGDOEncoding(sizeinputonehot=sizeinputonehot,
+                                sizeout=latentdim,
+                                )
+# set the mask in this operator
+gd_op.set_mask(tau)
+# effectively mask the unit in "h" depending on the configuration of "tau"
+h_after_gd = gd_op(h)  
+
+# h_after_gd will have the same shape than h, and can be use exactly the same manner.
+```
+
+A more detailed version of this usage, as well as a example is shown in the code.
+
+## Use example and results
+This part has not been documented yet, but a working example can be found by running:
+```python
+python GuidedDropout/GuidedDropout.py
+```
+From inside this repository.
+
 
 ## References
 @inproceedings{donnot:hal-01695793,
