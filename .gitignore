@@ -102,3 +102,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+
+# used by pycharm
+.idea/
+
+# the saved masks
+guided_dropout_encoding/
