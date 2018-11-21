@@ -290,7 +290,7 @@ class SpecificGDOEncoding(SpecificGDCEncoding):
         :param reload: do you want to reload (T) or build (F) the mask
         :param keep_prob: the keeping probability for regular dropout (applied only in the units not "guided dropout'ed")
         """
-        # this is simply used for saving at the moment : 
+        # this is simply used for saving at the moment :
         SpecificGDCEncoding.__init__(self, sizeinputonehot=sizeinputonehot, nrow=1,
                                      ncol=sizeout, name=name,
                                      path=path, reload=reload, nbconnections=nbconnections,
